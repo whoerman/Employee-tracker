@@ -35,6 +35,7 @@ function employeeTrack() {
                 "Remove an Employee",
                 "Update an Employee Role",
                 "Update an Employee Manager",
+                "Exit the Program",
             ]
         })
         .then(function (answer) {
@@ -66,41 +67,64 @@ function employeeTrack() {
                 case "Remove an Employee":
                     updateEmployeeManager();
                     break;
+
+                case "Exit the Program":
+                    endProgram();
+                    break;
             }
         });
 };
 
 function viewEmployees() {
-console.log("viewEmployees")
+    console.log("viewEmployees");
+    connection.query("SELECT * FROM employee;", function (err, data) {
+        if (err) {
+            return res.status(500).end();
+        }
+
+        console.table(data);
+        employeeTrack();
+    });
 };
 
 function viewEmployeesbyDept() {
-    console.log("viewEmployeesbyDept")
+    console.log("viewEmployeesbyDept");
+    connection.query("SELECT * FROM employee;", function (err, data) {
+        if (err) {
+            return res.status(500).end();
+        }
 
+        console.table(data);
+        employeeTrack();
+    });
 };
 
 function viewEmployeesbyManager() {
-    console.log("viewEmployeesbyManager")
-
+    console.log("viewEmployeesbyManager");
+    employeeTrack();
 };
 
 function addEmployee() {
-    console.log("addEmployee")
-
+    console.log("addEmployee");
+    employeeTrack();
 };
 
 function removeEmployee() {
-    console.log("removeEmployee")
-
+    console.log("removeEmployee");
+    employeeTrack();
 };
 
 function updateEmployeeRole() {
-    console.log("updateEmployeeRole")
-
+    console.log("updateEmployeeRole");
+    employeeTrack();
 };
 
 function updateEmployeeManager() {
-    console.log("updateEmployeeManager")
+    console.log("updateEmployeeManager");
+    employeeTrack();
+};
 
-}
-
+function endProgram() {
+    console.log("endProgram");
+    return process.exit();
+};
