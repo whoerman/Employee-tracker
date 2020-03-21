@@ -77,11 +77,10 @@ function employeeTrack() {
 
 function viewEmployees() {
     console.log("viewEmployees");
-    connection.query("SELECT * FROM employee;", function (err, data) {
+    connection.query("SELECT firstName, lastname, title, department.name, salary, manager_id FROM employee LEFT JOIN role ON (employee.role_id = role.id) LEFT JOIN department ON (role.depaertment_id = department.id);", function (err, data) {
         if (err) {
             return res.status(500).end();
         }
-
         console.table(data);
         employeeTrack();
     });
@@ -89,7 +88,7 @@ function viewEmployees() {
 
 function viewEmployeesbyDept() {
     console.log("viewEmployeesbyDept");
-    connection.query("SELECT * FROM employee;", function (err, data) {
+    connection.query("SELECT * FROM department", function (err, data) {
         if (err) {
             return res.status(500).end();
         }
@@ -101,11 +100,18 @@ function viewEmployeesbyDept() {
 
 function viewEmployeesbyManager() {
     console.log("viewEmployeesbyManager");
+    connection.query("SELECT * FROM employee", function (err, data) {
+        if (err) {
+            return res.status(500).end();
+        }
+        console.table(data);
     employeeTrack();
+});
 };
 
 function addEmployee() {
     console.log("addEmployee");
+    
     employeeTrack();
 };
 
