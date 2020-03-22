@@ -36,7 +36,6 @@ function employeeTrack() {
                 "Update an Employee Role",
                 "Update an Employee Manager",
                 "Exit the Program",
-                "Test a function",
             ]
         })
         .then(function (answer) {
@@ -73,16 +72,14 @@ function employeeTrack() {
                     endProgram();
                     break;
 
-                case "Test a function":
-                    makeEmployeeArray();
-                    break;
             }
         });
 };
 
 function viewEmployees() {
     console.log("viewEmployees");
-    connection.query("SELECT firstName, lastname, title, department.name, salary, manager_id FROM employee LEFT JOIN role ON (employee.role_id = role.id) LEFT JOIN department ON (role.department_id = department.id);", function (err, data) {
+    connection.query(
+        "SELECT firstName, lastname, title, department.name, salary, manager_id FROM employee LEFT JOIN role ON (employee.role_id = role.id) LEFT JOIN department ON (role.department_id = department.id);", function (err, data) {
         if (err) {
             return res.status(500).end();
         }
