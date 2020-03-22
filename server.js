@@ -53,7 +53,7 @@ function employeeTrack() {
                     break;
 
                 case "Add an Employee":
-                    addEmployee();
+                    addEmployee2();
                     break;
 
                 case "Remove an Employee":
@@ -77,9 +77,10 @@ function employeeTrack() {
 };
 
 function viewEmployees() {
-    console.log("viewEmployees");
     connection.query(
-        "SELECT firstName, lastname, title, department.name, salary, manager_id FROM employee LEFT JOIN role ON (employee.role_id = role.id) LEFT JOIN department ON (role.department_id = department.id);", function (err, data) {
+        "SELECT firstName, lastname, title, department.name, salary, manager_id FROM employee " +
+        "LEFT JOIN role ON (employee.role_id = role.id) " +
+        "LEFT JOIN department ON (role.department_id = department.id);", function (err, data) {
         if (err) {
             return res.status(500).end();
         }
@@ -89,9 +90,8 @@ function viewEmployees() {
 };
 
 function viewEmployeesbyDept() {
-    console.log("viewEmployeesbyDept");
     connection.query(
-        "SELECT firstName, lastname, title, department.name, salary, name FROM department " +
+        "SELECT department.name, firstName, lastname, title, salary, name FROM department " +
         "INNER JOIN role ON (department.id = role.department_id) " +
         "INNER JOIN employee ON (role.id = employee.role_id)", function (err, data) {
 
@@ -106,10 +106,15 @@ function viewEmployeesbyDept() {
 
 function viewEmployeesbyManager() {
     console.log("viewEmployeesbyManager");
-    connection.query("SELECT * FROM employee", function (err, data) {
+    connection.query(
+        "SELECT department.name, firstName, lastname, title, salary, name FROM department " +
+        "INNER JOIN role ON (department.id = role.department_id) " +
+        "INNER JOIN employee ON (role.id = employee.role_id)", function (err, data) {
+
         if (err) {
             return res.status(500).end();
         }
+
         console.table(data);
         employeeTrack();
     });
@@ -143,6 +148,47 @@ function addEmployee() {
             );
         })
 };
+
+function addEmployee2() {
+    console.log("addEmployee2");
+    connection.query("SELECT * FROM employee" , function(err,res) {
+        const employees = res.map(function(employee) {
+            return `${employee.firstName} ${employee.lastname}`
+        })
+        inquirer
+        .prompt(
+            [{
+                name: "firstNameInput",
+                type: "input",
+                message: "What is the employee's First name?"
+            },
+            {
+                name: "lastnameInput",
+                type: "input",
+                message: "What is the employee's last name?"
+            },
+            {
+                name: "employeeName",
+                type: "rawlist",
+                message: "Who is their manager?",
+                choices: employees
+            }
+        ]
+            )
+            .then(function (result) {
+                var query = connection.query(
+                    "INSERT INTO employee SET ?", {
+                        firstName: result.firstNameInput,
+                        lastname: result.lastnameInput
+                    },
+                    function (err, res) {
+                        if (err) throw err;
+                        console.log(res.affectedRows + " employee inserted!\n");
+                        employeeTrack();
+                    }
+                );
+            })
+    })};
 
 function removeEmployee() {
     console.log("removeEmployee");
